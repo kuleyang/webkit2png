@@ -158,9 +158,11 @@ class WebkitLoad (Foundation.NSObject, WebKit.protocols.WebFrameLoadDelegate):
                 nsurl = Foundation.NSURL.alloc().initFileURLWithPath_(url)
         nsurl = nsurl.absoluteURL()
 
+        # if self.options.ignore_ssl_check:
+        #     Foundation.NSURLRequest.setAllowsAnyHTTPSCertificate_forHost_(objc.YES, nsurl.host())
+        # Handles ATS HTTPS requirement introduced in El Cap
         if self.options.ignore_ssl_check:
-            Foundation.NSURLRequest.setAllowsAnyHTTPSCertificate_forHost_(objc.YES, nsurl.host())
-
+            AppKit.NSBundle.mainBundle().infoDictionary()['NSAppTransportSecurity'] = dict(NSAllowsArbitraryLoads = True)
         print "Fetching", nsurl, "..."
         self.resetWebview(webview)
         scriptobject = webview.windowScriptObject()
